@@ -63,6 +63,19 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
         # When everything done, text on the video window.
         cv2.putText(image, "Press 'ESC' to close", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
 
+        # Calculate the angle between the torso and the floor for people falling detection and put on the video window if the person is falling.
+        if results.pose_landmarks is not None:
+            left_shoulder = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER]
+            right_shoulder = results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_SHOULDER]
+            left_hip = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_HIP]
+            right_hip = results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_HIP]
+            torso_angle = np.arctan((right_shoulder.y - left_shoulder.y) / (right_shoulder.x - left_shoulder.x)) - np.arctan((right_hip.y - left_hip.y) / (right_hip.x - left_hip.x))
+            torso_angle = np.degrees(torso_angle)
+            # Put torso angle on the video window.
+            cv2.putText(image, f"Torso angle: {torso_angle:.2f}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+            
+        
+
         cv2.imshow('MediaPipe Pose', image)
         if cv2.waitKey(5) & 0xFF == 27:
             break
