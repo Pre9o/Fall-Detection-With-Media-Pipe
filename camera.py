@@ -69,9 +69,14 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             right_hip = results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_HIP]
             angle = np.arctan2(right_shoulder.y - right_hip.y, right_shoulder.x - right_hip.x)
             angle_deg = np.degrees(angle)
+
+            left_shoulder = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER]
+            left_hip = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_HIP]
+            angle_left = np.arctan2(left_shoulder.y - left_hip.y, left_shoulder.x - left_hip.x)
+            angle_deg_left = np.degrees(angle_left)
             
             # Check if the person has fallen.
-            if angle_deg > 60:
+            if angle_deg > 60 or angle_deg_left > 60:
                 cv2.putText(image, 'Person has fallen', (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
         
 
