@@ -1,1 +1,1 @@
-# detector-de-queda
+# Fall detection with Google Media Pipe
